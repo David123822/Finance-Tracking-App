@@ -6,6 +6,7 @@ from tkinter import messagebox
 
 current_time = datetime.date.today()
 month = current_time.month
+year = current_time.year
 
 def add_data(): # display the window to add data
     global addwin, in_name, in_value, ex_value, select
@@ -75,7 +76,7 @@ def addIncome(): # dont forget to reset the fields at the end
     if  not income_label:
         messagebox.showerror("Error", "Please assign a label to the income")
     else:
-        cursor.execute("INSERT INTO Income (label, month, ammount) VALUES (?,?,?)", (income_label, month, income))
+        cursor.execute("INSERT INTO Income (label, month, ammount, year) VALUES (?,?,?,?)", (income_label, month, income, year))
         db.commit()
         #print(f"{income_label} -> {income}")
 
@@ -89,7 +90,7 @@ def addIncome(): # dont forget to reset the fields at the end
 def addExpences():
     expence_label = select.get()
     expence = ex_value.get()
-    income_ID = get_income_ID("Salary")
+    income_ID = get_income_ID("Salary",month)
 
     if expence_label == "Select from database" or expence_label == "No expences found":
         messagebox.showerror("Error", "Please choose a label, it is needed for the graphs")
@@ -122,7 +123,7 @@ def top_menu(link):
     file_menu.add_separator()
     file_menu.add_command(label="Refresh page", command=refreshnow)
     file_menu.add_command(label="Exit", command=link.destroy)
-    menu_bar.add_cascade(label="New", menu=file_menu)
+    menu_bar.add_cascade(label="Menu", menu=file_menu)
 
     #refresh = Menu(menu_bar, tearoff=0)
     #refresh.add_command(label="Refresh page", command=refreshnow)
@@ -187,7 +188,7 @@ def addsavings():
 def addsavtodb():
     savings = sav_value.get()
 
-    cursor.execute("INSERT INTO Savings(month, ammount) VALUES(?,?)",(month, savings))
+    cursor.execute("INSERT INTO Savings(month, ammount, year) VALUES(?,?,?)",(month, savings, year))
     db.commit()
     addsav.destroy()
 
@@ -201,8 +202,8 @@ def get_espences():
     return labels
 
 
-def get_income_ID(label):
-    cursor.execute("SELECT id FROM Income WHERE label=?",(label,))
+def get_income_ID(label, month):
+    cursor.execute("SELECT id FROM Income WHERE label=? AND month = ? ",(label,month))
 
     # fetch the row from the result set
     row = cursor.fetchone()
@@ -220,12 +221,14 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS Income(
                id integer PRIMARY KEY AUTOINCREMENT,
                label text NOT NULL,
                month integer NOT NULL,
+               year integer NOT NULL,
                ammount float NOT NULL);""")
 
 cursor.execute("""CREATE TABLE IF NOT EXISTS Savings(
                id integer PRIMARY KEY AUTOINCREMENT,
                label text DEFAULT 'Saved',
                month integer NOT NULL,
+               year integer NOT NULL,
                ammount float NOT NULL);""")
 
 cursor.execute("""CREATE TABLE IF NOT EXISTS Expences(
