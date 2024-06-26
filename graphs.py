@@ -13,7 +13,7 @@ class Graph:
         """Generates a line graph based on the dates and the values"""
         self.ax.plot(dates, values)
         self.ax.set_title("Value Over Time")
-        self.ax.set_xlabel("Date")
+        self.ax.set_xlabel("Label")
         self.ax.set_ylabel("Value")
         return self.fig
 
@@ -22,7 +22,7 @@ class Graph:
         """Generates a scatter graph based on the dates and the values"""
         self.ax.scatter(dates, values)
         self.ax.set_title("Value Over Time")
-        self.ax.set_xlabel("Date")
+        self.ax.set_xlabel("Label")
         self.ax.set_ylabel("Value")
         return self.fig
     
@@ -31,7 +31,7 @@ class Graph:
         """Generates a bar graph based on a list of categories and expenses"""
         self.ax.bar(categories, expenses)
         self.ax.set_title("Monthly Expenses")
-        self.ax.set_xlabel("Category")
+        self.ax.set_xlabel("Label")
         self.ax.set_ylabel("Value")
         return self.fig
 
